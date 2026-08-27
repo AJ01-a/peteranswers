@@ -1,0 +1,130 @@
+/* =========================================================
+   PETER // DIGITAL ORACLE — design tokens
+   Single source of truth for colour, type, space, motion.
+   ========================================================= */
+
+:root {
+  /* ---- surfaces -------------------------------------- */
+  --void:            #04060a;
+  --deep:            #070a11;
+  --raise:           #0b0f18;
+
+  --panel-bg:        rgba(255, 255, 255, 0.030);
+  --panel-bg-hi:     rgba(255, 255, 255, 0.052);
+  --panel-line:      rgba(255, 255, 255, 0.085);
+  --panel-line-hi:   rgba(255, 255, 255, 0.16);
+  --panel-blur:      18px;
+
+  /* ---- text ------------------------------------------ */
+  --text:            #e8edf6;
+  --text-soft:       #b3bccd;
+  --text-dim:        #7b8598;
+  --text-faint:      #4e576a;
+
+  /* ---- accent (overridden per mode) ------------------ */
+  --accent:          #7dd3fc;
+  --accent-deep:     #2f7fa8;
+  --accent-glow:     rgba(125, 211, 252, 0.30);
+  --accent-wash:     rgba(125, 211, 252, 0.07);
+  --accent-text:     #bfe7ff;
+
+  --warn:            #e0b072;
+  --danger:          #e08585;
+  --ok:              #7fd6a8;
+
+  /* ---- type ------------------------------------------ */
+  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter,
+             Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono",
+               "Cascadia Code", Menlo, Consolas, monospace;
+
+  --fs-micro:  0.6875rem;  /* 11 */
+  --fs-tiny:   0.75rem;    /* 12 */
+  --fs-small:  0.8125rem;  /* 13 */
+  --fs-base:   0.9375rem;  /* 15 */
+  --fs-lg:     1.0625rem;  /* 17 */
+  --fs-xl:     1.375rem;   /* 22 */
+  --fs-2xl:    1.875rem;   /* 30 */
+  --fs-3xl:    2.75rem;    /* 44 */
+
+  --track-wide:  0.34em;
+  --track-mid:   0.18em;
+  --track-tight: -0.015em;
+
+  /* ---- space ----------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+
+  --radius-s: 6px;
+  --radius:   12px;
+  --radius-l: 18px;
+
+  /* ---- motion ---------------------------------------- */
+  --ease:        cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast:  160ms;
+  --t-mid:   320ms;
+  --t-slow:  680ms;
+  --t-cine:  1200ms;
+
+  /* effect intensity, driven by the operator console (0 - 1.5) */
+  --fx-intensity: 1;
+  --anim-intensity: 1;
+
+  --z-bg: 0;
+  --z-content: 10;
+  --z-veil: 40;
+  --z-console: 60;
+  --z-toast: 80;
+}
+
+/* ---------------- mode palettes ----------------------- */
+[data-mode="general"] {
+  --accent: #7dd3fc; --accent-deep: #2b7ea8; --accent-text: #cbecff;
+  --accent-glow: rgba(125,211,252,.30); --accent-wash: rgba(125,211,252,.07);
+}
+[data-mode="love"] {
+  --accent: #f2a8c4; --accent-deep: #a8527a; --accent-text: #ffd6e6;
+  --accent-glow: rgba(242,168,196,.28); --accent-wash: rgba(242,168,196,.07);
+}
+[data-mode="future"] {
+  --accent: #a9b6fb; --accent-deep: #4e5aa8; --accent-text: #dbe1ff;
+  --accent-glow: rgba(169,182,251,.28); --accent-wash: rgba(169,182,251,.07);
+}
+[data-mode="mind"] {
+  --accent: #7fe3cd; --accent-deep: #2c8a78; --accent-text: #cdfff3;
+  --accent-glow: rgba(127,227,205,.26); --accent-wash: rgba(127,227,205,.06);
+}
+[data-mode="spirit"] {
+  --accent: #c8b6fa; --accent-deep: #6a55a8; --accent-text: #e7dcff;
+  --accent-glow: rgba(200,182,250,.28); --accent-wash: rgba(200,182,250,.07);
+}
+[data-mode="yesno"] {
+  --accent: #9ec5f2; --accent-deep: #43699c; --accent-text: #dbe9ff;
+  --accent-glow: rgba(158,197,242,.26); --accent-wash: rgba(158,197,242,.06);
+}
+[data-mode="secrets"] {
+  --accent: #d8bd8e; --accent-deep: #8a6f42; --accent-text: #f4e4c6;
+  --accent-glow: rgba(216,189,142,.26); --accent-wash: rgba(216,189,142,.06);
+}
+[data-mode="tarot"] {
+  --accent: #e6c98a; --accent-deep: #957535; --accent-text: #fbecc7;
+  --accent-glow: rgba(230,201,138,.28); --accent-wash: rgba(230,201,138,.07);
+}
+[data-mode="dark"] {
+  --accent: #d98b8b; --accent-deep: #8a3f3f; --accent-text: #ffd8d8;
+  --accent-glow: rgba(217,139,139,.26); --accent-wash: rgba(217,139,139,.06);
+  --void: #050405; --deep: #090709; --raise: #0d0a0c;
+  --text: #e9e3e5;
+}
+
+:root {
+  --grain-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}

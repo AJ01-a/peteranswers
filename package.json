@@ -1,0 +1,13 @@
+{
+  "name": "peter",
+  "version": "2.0.0",
+  "private": true,
+  "description": "PETER — an entertainment illusion with an optional local Ollama layer.",
+  "type": "module",
+  "engines": { "node": ">=18.17" },
+  "scripts": {
+    "start": "node server/index.mjs",
+    "dev": "node --watch server/index.mjs"
+  },
+  "dependencies": {}
+}

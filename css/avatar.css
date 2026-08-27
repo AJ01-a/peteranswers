@@ -1,0 +1,184 @@
+/* =========================================================
+   Peter — the entity
+   ========================================================= */
+
+.peter {
+  position: relative;
+  width: clamp(220px, 34vw, 360px);
+  aspect-ratio: 1;
+  display: grid; place-items: center;
+  isolation: isolate;
+}
+
+/* breathing shell */
+.peter__body {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  animation: breathe calc(7s / var(--anim-intensity, 1)) var(--ease-in-out) infinite;
+  will-change: transform;
+}
+
+.peter__halo {
+  position: absolute; inset: -18%;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle closest-side,
+    color-mix(in srgb, var(--accent-glow) 85%, transparent) 0%,
+    color-mix(in srgb, var(--accent-glow) 30%, transparent) 46%,
+    transparent 72%);
+  opacity: calc(.42 * var(--fx-intensity, 1));
+  transition: opacity var(--t-slow) var(--ease), transform var(--t-slow) var(--ease);
+  z-index: -1;
+}
+
+.peter__glyph { width: 100%; height: 100%; overflow: visible; }
+
+/* --- rings --- */
+.ring { fill: none; transform-box: fill-box; transform-origin: center; }
+.ring--outer {
+  stroke: color-mix(in srgb, var(--accent) 26%, transparent);
+  stroke-width: .7; stroke-dasharray: 2 9; stroke-linecap: round;
+  animation: spin calc(80s / var(--anim-intensity,1)) linear infinite;
+}
+.ring--ticks {
+  stroke: color-mix(in srgb, var(--accent) 34%, transparent);
+  stroke-width: 1.4; stroke-dasharray: .6 6.4; stroke-linecap: round;
+  animation: spin calc(120s / var(--anim-intensity,1)) linear infinite reverse;
+}
+.ring--mid {
+  stroke: rgba(255,255,255,.10); stroke-width: .6;
+}
+.ring--arc {
+  stroke: var(--accent); stroke-width: 1.1; stroke-linecap: round;
+  stroke-dasharray: 34 210;
+  opacity: .8;
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+  animation: spin calc(14s / var(--anim-intensity,1)) linear infinite;
+}
+.ring--arc2 {
+  stroke: color-mix(in srgb, var(--accent) 55%, white);
+  stroke-width: .8; stroke-linecap: round;
+  stroke-dasharray: 12 300;
+  opacity: .55;
+  animation: spin calc(22s / var(--anim-intensity,1)) linear infinite reverse;
+}
+.ring--inner { stroke: rgba(255,255,255,.14); stroke-width: .5; }
+
+/* --- aperture blades --- */
+.blade {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 30%, transparent);
+  stroke-width: .55;
+  transform-box: fill-box; transform-origin: center;
+  animation: blade-pulse calc(9s / var(--anim-intensity,1)) var(--ease-in-out) infinite;
+}
+.blade:nth-of-type(2) { animation-delay: -1.5s; }
+.blade:nth-of-type(3) { animation-delay: -3s; }
+
+/* --- eye --- */
+.peter__eye { transform-box: fill-box; transform-origin: center; }
+
+.eye__socket { fill: url(#socketGrad); }
+.eye__iris {
+  transform-box: fill-box; transform-origin: center;
+  transition: transform 900ms var(--ease-out);
+  will-change: transform;
+}
+.iris__disc { fill: url(#irisGrad); }
+.iris__rim {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 62%, transparent);
+  stroke-width: .55; opacity: .7;
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+}
+.iris__ring {
+  fill: none;
+  stroke: color-mix(in srgb, var(--accent) 26%, transparent);
+  stroke-width: .35;
+  stroke-dasharray: 5 3.2;
+  transform-box: fill-box; transform-origin: center;
+  animation: spin calc(46s / var(--anim-intensity,1)) linear infinite reverse;
+}
+.iris__fibre {
+  stroke: color-mix(in srgb, var(--accent) 34%, transparent);
+  stroke-width: .3; fill: none; stroke-linecap: round;
+}
+.iris__fibre--b { stroke: rgba(255,255,255,.16); }
+.iris__pupil { fill: #01030a; filter: drop-shadow(0 0 3px rgba(0,0,0,.9)); }
+.iris__core {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 6px var(--accent));
+  animation: core-pulse calc(4.5s / var(--anim-intensity,1)) var(--ease-in-out) infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+.iris__spec { fill: rgba(255,255,255,.42); }
+
+/* blink */
+.peter__lidgroup { transform-box: fill-box; transform-origin: center; }
+.peter[data-blink="1"] .peter__lidgroup { animation: blink 180ms var(--ease-in-out); }
+
+/* --- scan sweep --- */
+.peter__scan {
+  fill: url(#scanGrad);
+  opacity: 0;
+  transform-box: fill-box; transform-origin: center;
+}
+
+/* --- state: attentive --- */
+.peter[data-state="attentive"] .peter__halo { opacity: calc(.58 * var(--fx-intensity,1)); }
+.peter[data-state="attentive"] .ring--arc { animation-duration: calc(9s / var(--anim-intensity,1)); }
+.peter[data-state="attentive"] .iris__core { animation-duration: calc(3s / var(--anim-intensity,1)); }
+
+/* --- state: processing --- */
+.peter[data-state="processing"] .peter__halo {
+  opacity: calc(.78 * var(--fx-intensity,1));
+  animation: halo-throb 2.2s var(--ease-in-out) infinite;
+}
+.peter[data-state="processing"] .ring--arc  { animation-duration: calc(2.6s / var(--anim-intensity,1)); stroke-dasharray: 60 190; }
+.peter[data-state="processing"] .ring--arc2 { animation-duration: calc(4s / var(--anim-intensity,1)); opacity: .8; }
+.peter[data-state="processing"] .ring--ticks { animation-duration: calc(24s / var(--anim-intensity,1)); }
+.peter[data-state="processing"] .peter__body { animation-duration: calc(3.4s / var(--anim-intensity,1)); }
+.peter[data-state="processing"] .peter__scan { opacity: .5; animation: scan-sweep 2.4s var(--ease-in-out) infinite; }
+.peter[data-state="processing"] .blade { animation-duration: calc(2.4s / var(--anim-intensity,1)); }
+
+/* --- state: answering --- */
+.peter[data-state="answering"] .peter__halo { opacity: calc(.95 * var(--fx-intensity,1)); transform: scale(1.06); }
+.peter[data-state="answering"] .iris__core { animation: core-flare 1.4s var(--ease-out) both; }
+.peter[data-state="answering"] .ring--arc { animation-duration: calc(18s / var(--anim-intensity,1)); }
+
+/* --- state: refusing --- */
+.peter[data-state="refusing"] .peter__body { animation: none; }
+.peter[data-state="refusing"] .ring--arc,
+.peter[data-state="refusing"] .ring--arc2,
+.peter[data-state="refusing"] .ring--outer,
+.peter[data-state="refusing"] .ring--ticks { animation-play-state: paused; }
+.peter[data-state="refusing"] .peter__halo { opacity: .14; }
+.peter[data-state="refusing"] .iris__core { fill: var(--danger); }
+
+/* --- state: paused / offline --- */
+.peter[data-state="paused"] * { animation-play-state: paused !important; }
+.peter[data-state="paused"] .peter__halo { opacity: .10; }
+.peter[data-state="paused"] .peter__glyph { filter: grayscale(.85) brightness(.6); }
+
+/* glitch burst (class toggled by fx/glitch.js) */
+.peter.is-glitching .peter__glyph { animation: glyph-glitch 420ms steps(2) 1; }
+
+/* --- caption --- */
+.peter-caption {
+  text-align: center;
+  min-height: 2.1em;
+  display: grid; align-content: start;
+  max-width: 30ch;
+}
+.peter-caption__line {
+  font-size: var(--fs-small);
+  color: var(--text-dim);
+  font-style: italic;
+  letter-spacing: .01em;
+  transition: opacity var(--t-mid) var(--ease);
+}
+.peter-caption__line.is-fading { opacity: 0; }
+
+@media (max-width: 1000px) {
+  .peter { width: clamp(190px, 50vw, 280px); }
+}

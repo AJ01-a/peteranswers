@@ -1,0 +1,201 @@
+/* =========================================================
+   layout — atmosphere, shell, grid
+   ========================================================= */
+
+/* ---------------- atmosphere -------------------------- */
+.atmosphere {
+  position: fixed; inset: 0; z-index: var(--z-bg);
+  pointer-events: none; overflow: hidden;
+}
+#particles { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* The radial gradients are already soft — a `filter: blur()` on top of them
+   is visually redundant and forces the layer to be re-rasterised on every
+   animated frame (measured: 9fps → 60fps once removed). */
+.aura {
+  position: absolute;
+  border-radius: 50%;
+  opacity: .95;
+  transition: opacity var(--t-cine) var(--ease);
+  will-change: transform;
+  contain: layout paint;
+}
+.aura--a {
+  width: min(86vw, 1020px); aspect-ratio: 1;
+  left: -20%; top: -30%;
+  background: radial-gradient(circle closest-side,
+    color-mix(in srgb, var(--accent-wash) 150%, transparent) 0%,
+    color-mix(in srgb, var(--accent-wash) 62%, transparent) 34%,
+    color-mix(in srgb, var(--accent-wash) 20%, transparent) 58%,
+    transparent 78%);
+  animation: drift-a 34s var(--ease-in-out) infinite;
+}
+.aura--b {
+  width: min(72vw, 820px); aspect-ratio: 1;
+  right: -18%; bottom: -26%;
+  background: radial-gradient(circle closest-side,
+    color-mix(in srgb, var(--accent-wash) 130%, transparent) 0%,
+    color-mix(in srgb, var(--accent-wash) 55%, transparent) 36%,
+    color-mix(in srgb, var(--accent-wash) 18%, transparent) 60%,
+    transparent 80%);
+  animation: drift-b 42s var(--ease-in-out) infinite;
+}
+/* Vignette and scanlines are static, so they live in one composited layer
+   instead of two. Fewer full-screen layers = cheaper compositing on phones. */
+.overlay {
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.016) 0px,
+      rgba(255,255,255,.016) 1px,
+      transparent 1px,
+      transparent 3px),
+    radial-gradient(120% 90% at 50% 0%,  transparent 30%, rgba(0,0,0,.55) 100%),
+    radial-gradient(100% 100% at 50% 100%, transparent 40%, rgba(0,0,0,.42) 100%);
+}
+
+.grain {
+  position: absolute; inset: -50%;
+  opacity: .035;
+  background-image: var(--grain-url);
+  background-size: 180px 180px;
+  animation: grain-shift 6s steps(6) infinite;
+}
+
+/* Film grain is a luxury: skip it on touch devices, where the animated
+   full-screen texture costs the most and shows the least. */
+@media (pointer: coarse), (max-width: 640px) {
+  .grain { display: none; }
+}
+
+/* ---------------- shell ------------------------------- */
+.shell {
+  position: relative; z-index: var(--z-content);
+  display: flex; flex-direction: column;
+  min-height: 100dvh;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding: clamp(1rem, 2.6vw, 2rem) clamp(1rem, 3.4vw, 3rem) clamp(1rem, 2.4vw, 2rem);
+  gap: clamp(1.25rem, 2.4vw, 2rem);
+}
+
+/* ---------------- masthead ---------------------------- */
+.masthead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-4); flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 13px; }
+
+/* A small breathing mark stands in for the old sub-title. */
+.brand__mark {
+  position: relative;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  flex: 0 0 auto;
+}
+.brand__mark::after {
+  content: ""; position: absolute; inset: 2px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: core-pulse calc(6s / var(--anim-intensity, 1)) var(--ease-in-out) infinite;
+}
+.brand__name {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: .42em;
+  text-indent: .42em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.masthead__tools { display: flex; align-items: center; gap: var(--s-2); }
+
+.icon-btn {
+  display: grid; place-items: center;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-s);
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  transition: color var(--t-fast) var(--ease),
+              background var(--t-fast) var(--ease),
+              border-color var(--t-fast) var(--ease);
+}
+.icon-btn:hover { color: var(--text); background: var(--panel-bg-hi); border-color: var(--panel-line); }
+.icon-btn[aria-pressed="true"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 32%, transparent); background: var(--accent-wash); }
+.icon-btn svg { width: 17px; height: 17px; }
+
+/* ---------------- stage grid -------------------------- */
+/* Named areas keep the DOM order sane (Peter → channel → form → answer →
+   memory) while letting the desktop layout put Peter in one tall column. */
+.stage {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.98fr) minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr auto auto;
+  grid-template-areas:
+    "peter modes"
+    "peter form"
+    "peter answer"
+    "peter memory"
+    "peter settings";
+  column-gap: clamp(1.25rem, 3vw, 3rem);
+  row-gap: clamp(0.8rem, 1.4vw, 1.1rem);
+  align-items: start;
+}
+
+.oracle-col   { grid-area: peter; }
+.panel.modes  { grid-area: modes; }
+#question-form{ grid-area: form; }
+.answer       { grid-area: answer; align-self: start; }
+#history-panel{ grid-area: memory; }
+#settings-panel { grid-area: settings; }
+
+.oracle-col {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: var(--s-3);
+  min-width: 0;
+  align-self: stretch;
+  position: sticky;
+  top: clamp(0.75rem, 3vh, 2.25rem);
+  max-height: calc(100dvh - 7rem);
+}
+
+/* ---------------- responsive -------------------------- */
+@media (max-width: 1000px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "peter"
+      "modes"
+      "form"
+      "answer"
+      "memory"
+      "settings";
+    row-gap: var(--s-4);
+  }
+  .oracle-col {
+    position: static;
+    max-height: none;
+    padding-block: var(--s-3) var(--s-2);
+  }
+  /* keep line lengths readable when the panels go full width */
+  .stage > :not(.oracle-col) {
+    width: 100%;
+    max-width: 680px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .masthead { gap: var(--s-2); }
+  .brand__name { font-size: var(--fs-base); letter-spacing: .32em; text-indent: .32em; }
+}
+
+/* short desktop windows: give Peter less room, never a scrollbar for nothing */
+@media (min-width: 1001px) and (max-height: 780px) {
+  .peter { width: clamp(180px, 24vw, 260px); }
+}
